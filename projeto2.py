@@ -222,14 +222,45 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
 #but brute force would have to test over 300 sextillion routes!):
 cityList = []
 
-for i in range(0,25):
+print("Number of cities (at most 30):")
+numCities = int(input())
+if numCities > 30:
+    numCities = 30
+
+print("Population size (at most 150):")
+numPopulation = int(input())
+if numPopulation > 150:
+    numPopulation = 150
+
+print("Elite size (at most 30):")
+elizeNumber = int(input())
+if elizeNumber > 30:
+    elizeNumber = 30
+
+print("Mutation rate (from 0.001 to 0.1):")
+rateMutation = float(input())
+if rateMutation > 0.1:
+    rateMutation = 0.1
+if rateMutation < 0.001:
+    rateMutation = 0.001
+
+print("Number of Generations(at most 1000):")
+numGenerations = int(input())
+if numGenerations > 1000:
+    numGenerations = 1000
+
+print("Executing, this will take at most 2 minutes...")
+print("If take longer Ctrl+C to interrupt!")
+
+for i in range(0,numCities):
     cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
 
 #Then, running the genetic algorithm is one simple line of code.
 # This is where art meets science; you should see which assumptions work best for you.
 # In this example, we have 100 individuals in each generation, keep 20 elite individuals, 
 # use a 1% mutation rate for a given gene, and run through 500 generations:
-geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+
+#geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
 
 #It’s great to know our starting and ending distance and the proposed route, 
 #but we would be remiss not to see how our distance improved over time. 
@@ -237,6 +268,7 @@ geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.
 #we can store the shortest distance from each generation in a progress list and then plot the results.
 def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
     pop = initialPopulation(popSize, population)
+    print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
     
@@ -244,10 +276,14 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         pop = nextGeneration(pop, eliteSize, mutationRate)
         progress.append(1 / rankRoutes(pop)[0][1])
     
+    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
     plt.plot(progress)
     plt.ylabel('Distance')
     plt.xlabel('Generation')
     plt.show() 
 
 #Run the GA in the same way as before, but now using the newly created geneticAlgorithmPlot function:
-geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+#geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+
+#defaults: 25,100,10,0.01,500
+geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=elizeNumber, mutationRate=rateMutation, generations=numGenerations)
