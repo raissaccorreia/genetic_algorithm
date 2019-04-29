@@ -272,12 +272,16 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
-    
+    t_inicio = time.time()
+
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, mutationRate)
         progress.append(1 / rankRoutes(pop)[0][1])
     
     print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
+    t_fim = time.time()
+    t = t_fim - t_inicio
+    print("Time elapsed in seconds: ", t) 
     plt.plot(progress)
     plt.ylabel('Distance')
     plt.xlabel('Generation')
@@ -287,8 +291,5 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
 #geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
 
 #defaults: 25,100,10,0.01,500
-t_inicio = time.time()
+
 geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=elizeNumber, mutationRate=rateMutation, generations=numGenerations)
-t_fim = time.time()
-t = t_fim - t_inicio
-print("Time elapsed: ", t) 
