@@ -1,6 +1,7 @@
 import numpy as np
 import random, operator, pandas as pd
 import matplotlib.pyplot as plt
+import time 
 
 #Gene: a city (represented as (x, y) coordinates)
 #Individual (aka “chromosome”): a single route satisfying the conditions above
@@ -250,7 +251,7 @@ if numGenerations > 1000:
     numGenerations = 1000
 
 print("Executing, this will take at most 2 minutes...")
-print("If take longer Ctrl+C to interrupt!")
+print("If it takes longer Ctrl+C to interrupt!")
 
 for i in range(0,numCities):
     cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
@@ -286,4 +287,8 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
 #geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
 
 #defaults: 25,100,10,0.01,500
+t_inicio = time.time()
 geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=elizeNumber, mutationRate=rateMutation, generations=numGenerations)
+t_fim = time.time()
+t = t_fim - t_inicio
+print("Time elapsed: ", t) 
