@@ -218,10 +218,6 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     bestRoute = pop[bestRouteIndex]
     return bestRoute
 
-#First, we need a list of cities to travel between. 
-#For this demonstration, we’ll create a list of 25 random cities (a seemingly small number of cities, 
-#but brute force would have to test over 300 sextillion routes!):
-cityList = []
 
 print("Number of cities (at most 30):")
 numCities = int(input())
@@ -233,10 +229,11 @@ numPopulation = int(input())
 if numPopulation > 150:
     numPopulation = 150
 
+#elite size can't be larger than population size 
 print("Elite size (at most 30):")
 elizeNumber = int(input())
-if elizeNumber > 30:
-    elizeNumber = 30
+if elizeNumber > numPopulation:
+    elizeNumber = numPopulation
 
 print("Mutation rate (from 0.001 to 0.1):")
 rateMutation = float(input())
@@ -253,6 +250,10 @@ if numGenerations > 1000:
 print("Executing, this will take at most 2 minutes...")
 print("If it takes longer Ctrl+C to interrupt!")
 
+#First, we need a list of cities to travel between. 
+#For this demonstration, we’ll create a list of 25 random cities (a seemingly small number of cities, 
+#but brute force would have to test over 300 sextillion routes!):
+cityList = []
 for i in range(0,numCities):
     cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
 
@@ -272,15 +273,15 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
-    t_inicio = time.time()
+    t_start = time.time()
 
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, mutationRate)
         progress.append(1 / rankRoutes(pop)[0][1])
     
     print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
-    t_fim = time.time()
-    t = t_fim - t_inicio
+    t_end = time.time()
+    t = t_end - t_start 
     print("Time elapsed in seconds: ", t) 
     plt.plot(progress)
     plt.ylabel('Distance')
