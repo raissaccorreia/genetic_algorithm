@@ -231,9 +231,9 @@ if numPopulation > 150:
 
 #elite size can't be larger than population size 
 print("Elite size (at most 30):")
-elizeNumber = int(input())
-if elizeNumber > numPopulation:
-    elizeNumber = numPopulation
+eliteNumber = int(input())
+if eliteNumber > numPopulation:
+    eliteNumber = numPopulation
 
 print("Mutation rate (from 0.001 to 0.1):")
 rateMutation = float(input())
@@ -293,4 +293,4 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
 
 #defaults: 25,100,10,0.01,500
 
-geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=elizeNumber, mutationRate=rateMutation, generations=numGenerations)
+geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=eliteNumber, mutationRate=rateMutation, generations=numGenerations)
