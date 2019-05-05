@@ -177,6 +177,47 @@ def breedPopulation(matingpool, eliteSize):
         children.append(child)
     return children
 
+#alternative function for breeding using cycle crossover
+#as described in https://arxiv.org/pdf/1203.3097.pdf 
+def breedAlt(parent1, parent2):
+	child = []
+
+	#child must start as an empty list having the same size as its parents
+	for i in range(0, len(parent1)):
+		child.append([])
+	child[0] = parent1[0]     
+	child[1] = parent1[1]
+	i = 1
+
+    #not working! 
+	while(1):
+		for k in range(0, len(parent1)):
+			if(parent2[i] == parent1[k]):
+				j = k 
+		child[j] = parent1[j]
+		i = j 
+		if(parent2[i] in child):
+			break 
+
+	for i in range(0, len(parent1)):
+		if(child[i] == []):
+			child[i] = parent2[i] 
+
+	return child 
+
+def breedPopulationAlt(matingpool, eliteSize):
+	children = []
+	length = len(matingpool) - eliteSize
+	pool = random.sample(matingpool, len(matingpool))
+
+	for i in range(0, eliteSize):
+		children.append(matingpool[i])
+
+	for i in range(0, length):
+		child = breedAlt(pool[i], pool[len(matingpool)-i-1])
+		children.append(child)
+	return children 
+
 #the TSP has a special consideration when it comes to mutation. 
 #Again, if we had a chromosome of 0s and 1s, mutation would simply mean assigning a low probability
 #of a gene changing from 0 to 1, or vice versa (to continue the example from before, a stock that was included
@@ -237,8 +278,8 @@ def nextGeneration(currentGen, eliteSize, mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize)
     matingpool = matingPool(currentGen, selectionResults)
-    children = breedPopulation(matingpool, eliteSize)
-    nextGeneration = mutatePopulationAlt(children, mutationRate)
+    children = breedPopulationAlt(matingpool, eliteSize)
+    nextGeneration = mutatePopulation(children, mutationRate)
     return nextGeneration
 
 #All we need to do is create the initial population, and then we can loop through as many generations as we desire.
