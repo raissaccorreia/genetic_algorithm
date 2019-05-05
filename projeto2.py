@@ -38,10 +38,10 @@ class Fitness:
     def __init__(self, route):
         self.route = route
         self.distance = 0
-        self.fitness= 0.0
+        self.fitness = 0.0
     
     def routeDistance(self):
-        if self.distance ==0:
+        if self.distance == 0:
             pathDistance = 0
             for i in range(0, len(self.route)):
                 fromCity = self.route[i]
@@ -105,6 +105,23 @@ def selection(popRanked, eliteSize):
                 selectionResults.append(popRanked[i][0])
                 break
     return selectionResults
+
+#alternative function for selection: besides the elite, selects individuals randomly 
+def selectionAlt(popRanked, eliteSize):
+	selectionResults = []
+
+	for i in range(0, eliteSize):
+		selectionResults.append(popRanked[i][0])
+
+	popIndexes = []
+	for i in range(0, len(popRanked)):
+		popIndexes.append(i)
+
+	for i in range(0, len(popRanked) - eliteSize):
+		j = random.choice(popIndexes)
+		selectionResults.append(popRanked[j][0])
+
+	return selectionResults
 
 #Now that we have the IDs of the routes that will make up our mating pool from the selection function, 
 #we can create the mating pool. We’re simply extracting the selected individuals from our population.
@@ -188,6 +205,28 @@ def mutatePopulation(population, mutationRate):
         mutatedPop.append(mutatedInd)
     return mutatedPop
 
+#alternative function for mutating
+#instead of swapping cities, we swap sequences of cities by dividing an individual in half
+def mutateAlt(individual, mutationRate):
+	i = 1
+	j = len(individual)//2
+	mutIndividual = individual
+	if(random.random() < mutationRate):
+		while(i != len(individual)//2):
+			mutIndividual[i] = individual[j]
+			mutIndividual[j] = individual[i]
+			i+=1
+			j+=1
+	return mutIndividual 
+
+def mutatePopulationAlt(population, mutationRate):
+	mutatedPop = []
+
+	for ind in range(0, len(population)):
+		mutatedInd = mutateAlt(population[ind], mutationRate)
+		mutatedPop.append(mutatedInd)
+	return mutatedPop 
+
 #Let’s pull these pieces together to create a function that produces a new generation.
 #First, we rank the routes in the current generation using rankRoutes. 
 #We then determine our potential parents by running the selection function, 
@@ -199,7 +238,7 @@ def nextGeneration(currentGen, eliteSize, mutationRate):
     selectionResults = selection(popRanked, eliteSize)
     matingpool = matingPool(currentGen, selectionResults)
     children = breedPopulation(matingpool, eliteSize)
-    nextGeneration = mutatePopulation(children, mutationRate)
+    nextGeneration = mutatePopulationAlt(children, mutationRate)
     return nextGeneration
 
 #All we need to do is create the initial population, and then we can loop through as many generations as we desire.
