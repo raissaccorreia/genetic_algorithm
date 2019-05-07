@@ -81,6 +81,7 @@ def rankRoutes(population):
     fitnessResults = {}
     for i in range(0,len(population)):
         fitnessResults[i] = Fitness(population[i]).routeFitness()
+        #print(sorted(fitnessResults.items(), key = operator.itemgetter(1), reverse = True))
     return sorted(fitnessResults.items(), key = operator.itemgetter(1), reverse = True)
 
 #First, we’ll use the output from rankRoutes to determine which routes to select in our selection function. In lines 3–5,
@@ -180,30 +181,21 @@ def breedPopulation(matingpool, eliteSize):
 #alternative function for breeding using cycle crossover
 #as described in https://arxiv.org/pdf/1203.3097.pdf 
 def breedAlt(parent1, parent2):
-	child = []
+    child = [None] * (len(parent1))
+    child[0] = parent1[0]
+    i = 0
 
-	#child must start as an empty list having the same size as its parents
-	for i in range(0, len(parent1)):
-		child.append([])
-	child[0] = parent1[0]     
-	child[1] = parent1[1]
-	i = 1
-
-    #not working! 
-	while(1):
-		for k in range(0, len(parent1)):
-			if(parent2[i] == parent1[k]):
-				j = k 
-		child[j] = parent1[j]
-		i = j 
-		if(parent2[i] in child):
-			break 
-
-	for i in range(0, len(parent1)):
-		if(child[i] == []):
-			child[i] = parent2[i] 
-
-	return child 
+    while(parent2[i] not in child):
+        j = parent1.index(parent2[i])
+        child[j] = parent1[j]
+        i = j
+    
+    for i in range(len(child)):
+        if child[i] == None:
+            child[i] = parent2[i]
+    
+    return child 
+    	
 
 def breedPopulationAlt(matingpool, eliteSize):
 	children = []
@@ -278,6 +270,14 @@ def nextGeneration(currentGen, eliteSize, mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize)
     matingpool = matingPool(currentGen, selectionResults)
+    children = breedPopulation(matingpool, eliteSize)
+    nextGeneration = mutatePopulation(children, mutationRate)
+    return nextGeneration
+
+def nextGenerationAlt(currentGen, eliteSize, mutationRate):
+    popRanked = rankRoutes(currentGen)
+    selectionResults = selectionAlt(popRanked, eliteSize)
+    matingpool = matingPool(currentGen, selectionResults)
     children = breedPopulationAlt(matingpool, eliteSize)
     nextGeneration = mutatePopulation(children, mutationRate)
     return nextGeneration
@@ -298,6 +298,39 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     bestRoute = pop[bestRouteIndex]
     return bestRoute
 
+def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations, alternative_choice):
+    pop = initialPopulation(popSize, population)
+    print("Initial best distance: " + str(1 / rankRoutes(pop)[0][1]))
+    print("Initial worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
+    progressBest = []
+    progressWorst = []
+    progressBest.append(1 / rankRoutes(pop)[0][1])
+    progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
+    t_start = time.time()
+
+    if alternative_choice == 'y':
+        for i in range(0, generations):
+            pop = nextGenerationAlt(pop, eliteSize, mutationRate)
+            progressBest.append(1 / rankRoutes(pop)[0][1])
+            progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
+    else:
+        for i in range(0, generations):
+            pop = nextGeneration(pop, eliteSize, mutationRate)
+            progressBest.append(1 / rankRoutes(pop)[0][1])
+            progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
+
+    print("Final best distance: " + str(1 / rankRoutes(pop)[0][1]))
+    print("Final worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
+    t_end = time.time()
+    t = t_end - t_start 
+    print("Time elapsed in seconds: ", t) 
+    plt.plot(progressBest)
+    plt.plot(progressWorst)
+    plt.ylabel('Distance')
+    plt.xlabel('Generation')
+    plt.show() 
+
+#now the execution!!!
 
 print("Number of cities (at most 30):")
 numCities = int(input())
@@ -327,6 +360,9 @@ numGenerations = int(input())
 if numGenerations > 1000:
     numGenerations = 1000
 
+print("Do you want the alternative version, modified by us? y or n")
+alternative_choice = input()
+
 print("Executing, this will take at most 2 minutes...")
 print("If it takes longer Ctrl+C to interrupt!")
 
@@ -337,40 +373,20 @@ cityList = []
 for i in range(0,numCities):
     cityList.append(City(x=int(random.random() * 200), y=int(random.random() * 200)))
 
+
+geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=eliteNumber, mutationRate=rateMutation,
+ generations=numGenerations, alternative_choice=alternative_choice)
+
+
 #Then, running the genetic algorithm is one simple line of code.
 # This is where art meets science; you should see which assumptions work best for you.
 # In this example, we have 100 individuals in each generation, keep 20 elite individuals, 
 # use a 1% mutation rate for a given gene, and run through 500 generations:
-
 #geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
-
 #It’s great to know our starting and ending distance and the proposed route, 
 #but we would be remiss not to see how our distance improved over time. 
 #With a simple tweak to our geneticAlgorithm function, 
 #we can store the shortest distance from each generation in a progress list and then plot the results.
-def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
-    pop = initialPopulation(popSize, population)
-    print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
-    progress = []
-    progress.append(1 / rankRoutes(pop)[0][1])
-    t_start = time.time()
-
-    for i in range(0, generations):
-        pop = nextGeneration(pop, eliteSize, mutationRate)
-        progress.append(1 / rankRoutes(pop)[0][1])
-    
-    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
-    t_end = time.time()
-    t = t_end - t_start 
-    print("Time elapsed in seconds: ", t) 
-    plt.plot(progress)
-    plt.ylabel('Distance')
-    plt.xlabel('Generation')
-    plt.show() 
-
 #Run the GA in the same way as before, but now using the newly created geneticAlgorithmPlot function:
 #geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
-
 #defaults: 25,100,10,0.01,500
-
-geneticAlgorithmPlot(population=cityList, popSize=numPopulation, eliteSize=eliteNumber, mutationRate=rateMutation, generations=numGenerations)
