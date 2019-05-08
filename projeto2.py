@@ -299,33 +299,67 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     return bestRoute
 
 def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations, alternative_choice):
+
     pop = initialPopulation(popSize, population)
+    #showing zero generation results
     print("Initial best distance: " + str(1 / rankRoutes(pop)[0][1]))
     print("Initial worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
+
+    #soma = 0 #to calc average distance
+    #for i in range (popSize-1):
+    #    soma += (1 / rankRoutes(pop)[i][1])
+    #    soma = soma/popSize-1       
+    #print("Initial average distance: " + str(soma))
+
     progressBest = []
     progressWorst = []
+    #progressAverage = []
     progressBest.append(1 / rankRoutes(pop)[0][1])
     progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
+    #progressAverage.append(soma)
     t_start = time.time()
 
     if alternative_choice == 'y':
         for i in range(0, generations):
             pop = nextGenerationAlt(pop, eliteSize, mutationRate)
+
             progressBest.append(1 / rankRoutes(pop)[0][1])
             progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
+
+            #soma = 0 #to calc average distance
+            #for k in range (popSize-1):
+            #    soma += (1 / rankRoutes(pop)[i][1])    
+            #    soma = soma/popSize    
+            #progressAverage.append(soma)
     else:
         for i in range(0, generations):
             pop = nextGeneration(pop, eliteSize, mutationRate)
             progressBest.append(1 / rankRoutes(pop)[0][1])
             progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
 
+            #soma = 0
+            #for k in range (popSize-1):
+            #    soma += (1 / rankRoutes(pop)[i][1])        
+            #    soma = soma/popSize-1
+            #progressAverage.append(soma)
+
+    #final results
     print("Final best distance: " + str(1 / rankRoutes(pop)[0][1]))
     print("Final worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
+    #soma = 0 #to calc average distance
+    #for i in range (popSize-1):
+    #   soma += (1 / rankRoutes(pop)[i][1])      
+    #    soma = soma/popSize  
+    #print("Final average distance: " + str(soma))
+
+    #calculating execution time
     t_end = time.time()
     t = t_end - t_start 
     print("Time elapsed in seconds: ", t) 
+    #making the plot
     plt.plot(progressBest)
     plt.plot(progressWorst)
+    #plt.plot(progressAverage)
     plt.ylabel('Distance')
     plt.xlabel('Generation')
     plt.show() 
