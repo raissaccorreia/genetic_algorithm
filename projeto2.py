@@ -305,11 +305,11 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     print("Initial best distance: " + str(1 / rankRoutes(pop)[0][1]))
     print("Initial worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
 
-    #soma = 0 #to calc average distance
-    #for i in range (popSize-1):
-    #    soma += (1 / rankRoutes(pop)[i][1])
-    #    soma = soma/popSize-1       
-    #print("Initial average distance: " + str(soma))
+    soma = 0 #to calc average distance
+    for i in range (popSize-1):
+        soma += (1 / rankRoutes(pop)[i][1])
+    soma = soma/popSize-1       
+    print("Initial average distance: " + str(soma))
 
     progressBest = []
     progressWorst = []
@@ -322,35 +322,22 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     if alternative_choice == 'y':
         for i in range(0, generations):
             pop = nextGenerationAlt(pop, eliteSize, mutationRate)
-
             progressBest.append(1 / rankRoutes(pop)[0][1])
             progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
-
-            #soma = 0 #to calc average distance
-            #for k in range (popSize-1):
-            #    soma += (1 / rankRoutes(pop)[i][1])    
-            #    soma = soma/popSize    
-            #progressAverage.append(soma)
     else:
         for i in range(0, generations):
             pop = nextGeneration(pop, eliteSize, mutationRate)
             progressBest.append(1 / rankRoutes(pop)[0][1])
             progressWorst.append(1 / rankRoutes(pop)[popSize-1][1])
 
-            #soma = 0
-            #for k in range (popSize-1):
-            #    soma += (1 / rankRoutes(pop)[i][1])        
-            #    soma = soma/popSize-1
-            #progressAverage.append(soma)
-
     #final results
     print("Final best distance: " + str(1 / rankRoutes(pop)[0][1]))
     print("Final worst distance: " + str(1 / rankRoutes(pop)[popSize-1][1]))
-    #soma = 0 #to calc average distance
-    #for i in range (popSize-1):
-    #   soma += (1 / rankRoutes(pop)[i][1])      
-    #    soma = soma/popSize  
-    #print("Final average distance: " + str(soma))
+    soma = 0 #to calc average distance
+    for i in range (popSize-1):
+       soma += (1 / rankRoutes(pop)[i][1])      
+    soma = soma/popSize  
+    print("Final average distance: " + str(soma))
 
     #calculating execution time
     t_end = time.time()
