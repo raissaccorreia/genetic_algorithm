@@ -6,10 +6,10 @@ Profª Esther
 Will take around 20 seconds to run:
 python 3 projeto2.py
 
-requirements:
-pip3 install numpy
-pip3 install matplotlib
-pip3 install pandas
+### Requirements:
+ * pip3 install numpy
+ * pip3 install matplotlib
+ * pip3 install pandas
 
 ## Applying Concepts
 
@@ -79,12 +79,12 @@ All we need to do is create the initial population, and then we can loop through
 
 ## Parameters
 
-Number of Cities: at most 50
-Population Size: at most 150
-Elite Population Size: at most 30 or Population Size
-Mutation Rate: beetwen 0.1% to 10%
-Number of Generations: at most 1000
-Our Alternative Version: 'y' or 'n'
+* Number of Cities: at most 50
+* Population Size: at most 150
+* Elite Population Size: at most 30 or Population Size
+* Mutation Rate: beetwen 0.1% to 10%
+* Number of Generations: at most 1000
+* Our Alternative Version: 'y' or 'n'
 
 ## Generating Random City List
 
